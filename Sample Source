@@ -1,0 +1,134 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base Class
+class Food {
+protected:
+    int id;
+    string name;
+    float price;
+
+public:
+    Food(int i, string n, float p) {
+        id = i;
+        name = n;
+        price = p;
+    }
+
+    virtual void display() {
+        cout << id << "\t" << name << "\tRs." << price << endl;
+    }
+
+    float getPrice() {
+        return price;
+    }
+
+    string getName() {
+        return name;
+    }
+};
+
+// Derived Class
+class FastFood : public Food {
+public:
+    FastFood(int i, string n, float p)
+        : Food(i, n, p) {}
+
+    void display() override {
+        cout << id << "\t" << name << "\tRs." << price << endl;
+    }
+};
+
+// Order Class
+class Order {
+private:
+    string customerName;
+    int orderId;
+    float total;
+
+public:
+    Order() {
+        total = 0;
+        orderId = 1001;
+    }
+
+    void setCustomer(string name) {
+        customerName = name;
+    }
+
+    void addItem(Food &f, int quantity) {
+        total += f.getPrice() * quantity;
+
+        cout << quantity << " x "
+             << f.getName()
+             << " added to order.\n";
+    }
+
+    void showBill() {
+        cout << "\n========== FINAL BILL ==========\n";
+        cout << "Order ID: " << orderId << endl;
+        cout << "Customer: " << customerName << endl;
+        cout << "Total Amount: Rs." << total << endl;
+        cout << "================================\n";
+    }
+};
+
+int main() {
+
+    FastFood menu[] = {
+        FastFood(1, "Burger", 80),
+        FastFood(2, "Pizza", 150),
+        FastFood(3, "Momos", 70),
+        FastFood(4, "Sandwich", 60),
+        FastFood(5, "French Fries", 90)
+    };
+
+    int choice, quantity;
+    string customerName;
+
+    Order order;
+
+    cout << "====================================\n";
+    cout << "     ONLINE FOOD ORDERING SYSTEM\n";
+    cout << "====================================\n";
+
+    cout << "Enter Customer Name: ";
+    getline(cin, customerName);
+
+    order.setCustomer(customerName);
+
+    do {
+        cout << "\n----------- FOOD MENU -----------\n";
+        cout << "ID\tFood\t\tPrice\n";
+
+        for (int i = 0; i < 5; i++) {
+            menu[i].display();
+        }
+
+        cout << "\nEnter Food ID (0 to Checkout): ";
+        cin >> choice;
+
+        if (choice >= 1 && choice <= 5) {
+
+            cout << "Enter Quantity: ";
+            cin >> quantity;
+
+            if (quantity > 0) {
+                order.addItem(menu[choice - 1], quantity);
+            } else {
+                cout << "Invalid quantity!\n";
+            }
+
+        } else if (choice != 0) {
+            cout << "Invalid Food ID!\n";
+        }
+
+    } while (choice != 0);
+
+    order.showBill();
+
+    cout << "\nThank you for ordering!\n";
+
+    return 0;
+}
